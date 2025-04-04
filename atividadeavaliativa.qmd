@@ -1,0 +1,122 @@
+---
+title: "Adriane Migliorini"
+format: html
+editor: visual
+---
+
+```{r}
+#| label: load-packages
+#| include: false
+
+library(tidyverse)
+library(WDI)
+library(plotly)
+```
+
+```{r}
+#| label: load-data
+#| include: false
+#CÓDIGO DE CARREGAMENTO DOS DADOS 
+
+#GRÁFICO SÉRIE TEPORAL 
+# Baixar dados de Exportações de bens e serviços (% do PIB) (indicador "NE.EXP.GNFS.ZS")
+dadosbrexpo <- WDI(country = "BR", indicator = "NE.EXP.GNFS.ZS", start = 1960, end = 2020)
+
+
+# Renomeando a coluna "NE.EXP.GNFS.ZS" para "EXPORTAÇÕES_DE_BENS_E_SERVIÇOS"
+colnames(dadosbrexpo)[colnames(dadosbrexpo) == "NE.EXP.GNFS.ZS"] <- "EXPORTAÇÕES_DE_BENS_E_SERVIÇOS"
+
+# Renomeando a coluna "year" para "ANO"
+colnames(dadosbrexpo)[colnames(dadosbrexpo) == "year"] <- "ANO"
+
+
+
+#GRÁFICO CORTE TRANSVERSAL
+paises_latam <- c("ARG", "BRA", "CHL", "COL", "ECU", "MEX", "PER", "URY", "BOL", 
+                  "PRY", "VEN", "CRI", "PAN", "DOM", "GTM", "HND", "NIC", "SLV")
+
+dados1 <- WDI(country = paises_latam, 
+              indicator = c("PIB_per_capita" = "NY.GDP.PCAP.CD", 
+                            "Taxa_desemprego" = "SL.UEM.TOTL.ZS"), 
+              start = 2019, end = 2019)
+# Remover valores ausentes
+dadosok <- na.omit(dados1)
+```
+
+## Gráfico de série temporal
+
+Falar sobre as variáveis do gráfico 1.
+
+To learn more about Quarto see <https://quarto.org>.
+
+```{r}
+#| label: graf1
+#| warning: false
+#| echo: false
+
+#COLOCAR COMANDOS DO GRÁFICO
+
+grafico_linha_brexpo <- 
+  ggplot(data = dadosbrexpo,
+         mapping = aes(x = ANO, y = EXPORTAÇÕES_DE_BENS_E_SERVIÇOS)) +
+  geom_line()  #FUNCIONA P/ SÉRIE TEMPORAL
+
+print(grafico_linha_brexpo)
+
+#INSTALANDO PACOTE PLOTY PARA MELHORIA DO GRÁFICO
+#install.packages("plotly")
+
+# Carregar a biblioteca plotly
+library(plotly)
+
+# Transformar o gráfico ggplot em um gráfico interativo
+grafico_interativo <- ggplot(data = dadosbrexpo, 
+                             mapping = aes(x = ANO, y = EXPORTAÇÕES_DE_BENS_E_SERVIÇOS)) +
+  geom_line(color = "dodgerblue", size = 1.5) +
+  geom_point(color = "red", size = 3, shape = 16) +
+  geom_smooth(method = "lm", color = "green", linetype = "dashed", se = FALSE) +
+  labs(title = "Exportações de Bens e Serviços (% do PIB) - Brasil",
+       subtitle = "De 1960 a 2020",
+       x = "Ano",
+       y = "Exportações de Bens e Serviços (% do PIB)") +
+  theme_minimal()
+
+# Transformar o gráfico ggplot em plotly (gráfico interativo)
+grafico_interativo <- ggplotly(grafico_interativo)
+
+# Exibir o gráfico interativo
+grafico_interativo
+
+```
+
+## Gráfico corte transversal
+
+Falar sobre as variáveis do gráfico 2.
+
+```{r}
+#| label: graf2
+#| warning: false
+#| echo: false
+
+#COLOCAR COMANDOS DO GRÁFICO DE CORTE TRANSVERSAL 
+# Criar o gráfico de dispersão com ajustes para rótulos e fonte
+ggplot(dadosok, aes(x = PIB_per_capita, y = Taxa_desemprego, label = country)) +
+  geom_point(color = "red", size = 3) +
+  geom_text(vjust = -0.5, size = 4, check_overlap = TRUE) +  # Adicionar nomes dos países com checagem de sobreposição
+  labs(title = "Taxa de desemprego vs PIB per capita (América Latina, 2019",
+       x = "PIB per capita (US$)",
+       y = "Taxa de Desemprego (%)",
+       caption = "Fonte: Banco Mundial") +  # Adicionar fonte abaixo
+  theme_minimal() +
+  theme(
+    axis.title = element_text(size = 12),       # Tamanho dos títulos dos eixos
+    axis.text = element_text(size = 11),        # Tamanho dos números nos eixos
+    plot.title = element_text(size = 14, face = "bold"),  # Título em negrito
+    axis.text.x = element_text(angle = 0, vjust = 0.5),    # Texto do eixo X na horizontal
+    axis.text.y = element_text(angle = 90, hjust = 0.5),   # Texto do eixo Y na vertical
+    plot.caption = element_text(size = 10, hjust = 0.5),   # Fonte centralizada abaixo do gráfico
+    plot.margin = margin(10, 10, 10, 20)  # Aumentar margem para o eixo X
+  )
+
+
+```
