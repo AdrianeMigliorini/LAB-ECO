@@ -43,11 +43,27 @@ dados1 <- WDI(country = paises_latam,
 dadosok <- na.omit(dados1)
 ```
 
-## Gráfico de série temporal
+## EXPORTAÇÕES DE BENS E SERVIÇOS NO BRASIL ENTRE 1960-2020 (Gráfico série temporal)
 
-Falar sobre as variáveis do gráfico 1.
+[**Descrição das variáveis:**]{.smallcaps}
 
-To learn more about Quarto see <https://quarto.org>.
+-   Exportações de bens e serviços
+
+Essa variável representa a soma de exportações de bens (como produtos manufaturados, alimentos, minérios) e serviços (como turismo, transporte e serviços financeiros), expressa como porcentagem do Produto Interno Bruto (PIB) de um país.\
+
+Ela indica o quanto a economia de um país depende do mercado externo para crescer. Valores mais altos sugerem uma maior integração comercial com outros países.
+
+-   Ano
+
+A variável "Ano" representa o recorte temporal de análise. No contexto de dados do Banco Mundial, cada linha de tempo corresponde a um ano civil completo (de 1º de janeiro a 31 de dezembro), permitindo o acompanhamento anual de indicadores econômicos e sociais.
+
+[**Explicação do gráfico:**]{.smallcaps}
+
+O gráfico temporal elaborado apresenta a evolução das exportações de bens e serviços como percentual do PIB no Brasil, no período de 1960 a 2020.\
+
+A linha do tempo permite observar as oscilações desse indicador ao longo das décadas, refletindo eventos econômicos importantes como períodos de crescimento, crises econômicas, abertura comercial nos anos 1990, e a inserção do Brasil no comércio internacional.\
+
+O gráfico é útil para identificar tendências de longo prazo, como o aumento da participação do setor externo na economia brasileira, ou momentos de retração provocados por instabilidades econômicas globais ou internas.
 
 ```{r}
 #| label: graf1
@@ -89,9 +105,35 @@ grafico_interativo
 
 ```
 
-## Gráfico corte transversal
+*Fontes:*
 
-Falar sobre as variáveis do gráfico 2.
+BANCO MUNDIAL. *Exports of goods and services (% of GDP)*. World Development Indicators. Disponível em: <https://data.worldbank.org/indicator/NE.EXP.GNFS.ZS>.
+
+BANCO MUNDIAL. *World Development Indicators – Time series*. World Bank DataBank. Disponível em: <https://databank.worldbank.org/source/world-development-indicators>.
+
+## RELAÇÃO ENTRE A TAXA DE DESEMPREGO E O PIB PER CAPITA DOS PAÍSES DA AMÉRICA LATINA NO ANO DE 2019 (Gráfico corte transversal)
+
+[**Descrição das variáveis:**]{.smallcaps}
+
+-   Taxa de desemprego
+
+É a proporção da população economicamente ativa que está sem emprego e procurando trabalho.
+
+A taxa de desemprego é um importante indicador do mercado de trabalho e da saúde econômica de um país. Altos níveis de desemprego geralmente estão associados a desaceleração econômica, enquanto taxas mais baixas indicam um mercado de trabalho mais aquecido.
+
+Essa variável está sendo medida em percentual.
+
+-   PIB per capita
+
+Produto Interno Bruto (PIB) dividido pela população total do país. Representa, em média, quanto cada indivíduo contribui ou consome da riqueza total produzida.
+
+O PIB per capita é amplamente utilizado como uma medida de prosperidade econômica e qualidade de vida, embora não capture desigualdade de renda nem outras dimensões sociais.
+
+Essa variável está sendo medida em dólares americanos correntes (US\$).
+
+[**Explicação do gráfico:**]{.smallcaps}
+
+O gráfico de dispersão apresentado compara a Taxa de Desemprego (%) com o PIB per capita (US\$) dos países da América Latina no ano de 2019. Cada ponto representa um país, com o nome indicado próximo à marcação. A partir da visualização, é possível observar como a performance econômica (medida pelo PIB per capita) pode estar associada a diferentes níveis de desemprego. Embora nem sempre haja uma relação direta e linear entre as duas variáveis, o gráfico permite identificar padrões regionais e possíveis outliers , como países com alto desemprego mesmo com PIB relativamente elevado ou vice-versa. Essa análise visual serve como ponto de partida para discussões mais aprofundadas sobre desenvolvimento econômico e condições do mercado de trabalho na região.
 
 ```{r}
 #| label: graf2
@@ -120,3 +162,9 @@ ggplot(dadosok, aes(x = PIB_per_capita, y = Taxa_desemprego, label = country)) +
 
 
 ```
+
+*Fontes:*
+
+**BANCO MUNDIAL.** Taxa de desemprego total (% da força de trabalho total) (estimativa modelada da OIT) \[recurso eletrônico\]. Disponível em: <https://data.worldbank.org/indicator/SL.UEM.TOTL.ZS>.
+
+**BANCO MUNDIAL.** PIB per capita (US\$ a preços correntes) \[recurso eletrônico\]. Disponível em: <https://data.worldbank.org/indicator/NY.GDP.PCAP.CD>.
