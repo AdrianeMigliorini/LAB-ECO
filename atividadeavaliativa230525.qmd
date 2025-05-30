@@ -1,0 +1,159 @@
+---
+title: "Média Mensal da Taxa de Câmbio"
+format: html
+editor: visual
+---
+
+# Flutuação da Taxa de Câmbio - Dólar Americano (Venda)
+
+O gráfico abaixo apresenta a média mensal da taxa de câmbio do dólar americano (venda), com base nos dados disponibilizados pelo Banco Central do Brasil desde janeiro de 2000 até os dias atuais. A taxa de câmbio indica quantos reais são necessários para adquirir um dólar americano, sendo uma variável econômica de extrema importância para o comércio exterior, inflação, investimentos e política monetária.
+
+```{r}
+#| label: load-packages
+#| include: false
+
+library(tidyverse)
+library(GetBCBData)
+library(gganimate)
+library(gifski)
+
+
+```
+
+```{r}
+#| label: load-data
+#| include: false
+
+my.id <- c(tcd = 1)
+
+df.bcb <- gbcbd_get_series(id = my.id ,
+                           first.date = '2000-01-01',
+                           last.date = Sys.Date(),
+                           format.data = 'long',
+                           use.memoise = TRUE, 
+                           cache.path = tempdir(), # use tempdir for cache folder
+                           do.parallel = FALSE)
+
+
+
+# Criar coluna com ano e mês no formato "YYYY-MM"
+df.bcb <- df.bcb %>%
+  mutate(mes = floor_date(ref.date, unit = "month"))
+
+# Calcular média mensal da taxa de câmbio
+df.mes <- df.bcb %>%
+  group_by(mes) %>%
+  summarise(media_tcd = mean(value, na.rm = TRUE))
+
+```
+
+```{r}
+#| label: graf1
+#| warning: false
+#| echo: false
+
+ggplot(df.mes, aes(x = mes, y = media_tcd)) +
+  geom_line(color = "steelblue", size = 1) +
+  geom_point(color = "steelblue", size = 1) +
+  labs(title = "Média Mensal da Taxa de Câmbio - Dólar Americano (Venda)",
+       subtitle = 'Data: {frame_along}', # Mostra o mês na legenda da animação
+       x = "Data",
+       y = "R$/US$ (média mensal)",
+       caption = "Fonte: Banco Central do Brasil") +
+  theme_minimal() +
+  transition_reveal(mes)
+ggplot(df.mes, aes(x = mes, y = media_tcd)) +
+  geom_line(color = "steelblue", size = 1) +
+  geom_point(color = "steelblue", size = 1) +
+  labs(title = "Média Mensal da Taxa de Câmbio - Dólar Americano (Venda)",
+       subtitle = 'Data: {frame_along}',
+       x = "Data",
+       y = "R$/US$ (média mensal)",
+       caption = "Fonte: Banco Central do Brasil") +
+  theme_minimal() +
+  transition_reveal(mes)
+
+
+
+
+```
+
+A análise da taxa de câmbio revela como fatores econômicos, políticos e externos afetam diretamente o valor do real frente ao dólar. O acompanhamento histórico permite entender padrões e preparar estratégias de política econômica mais eficazes. Este gráfico resume mais de duas décadas de comportamento cambial no Brasil, com ênfase nos eventos de maior impacto para a economia.
+
+### ^Relação com a Inflação^
+
+A variação do dólar tem impacto direto sobre os preços dos produtos importados e dos insumos utilizados pela indústria brasileira. Quando o dólar se valoriza frente ao real, os produtos estrangeiros ficam mais caros. Isso encarece bens de consumo importados, como eletrônicos, e também matérias-primas e insumos industriais, como componentes automotivos, fertilizantes e combustíveis.
+
+Esse aumento de custos pode ser repassado aos preços finais, pressionando a inflação interna — especialmente no chamado IPCA (Índice de Preços ao Consumidor Amplo), que é o principal indicador oficial de inflação no Brasil.
+
+### ^Relação com a Política Monetária^
+
+A variação do dólar afeta diretamente o cenário econômico e, por consequência, as decisões de política monetária do Banco Central. Quando o dólar se valoriza significativamente, há o risco de elevar a inflação, como explicado anteriormente. Diante disso, o Banco Central pode intervir utilizando a taxa Selic, principal instrumento da política monetária.
+
+Uma alta do dólar, por exemplo, pode levar o Banco Central a aumentar os juros para conter a inflação causada por produtos importados mais caros. Juros mais altos ajudam a reduzir a demanda na economia e também tornam o Brasil mais atrativo para investidores estrangeiros, o que pode reforçar a entrada de dólares no país e, com isso, contribuir para estabilizar o câmbio.
+
+Por outro lado, quando o dólar está mais baixo e a inflação sob controle, o Banco Central pode reduzir a taxa Selic para estimular o crédito, o consumo e o crescimento econômico.
+
+Em resumo, o comportamento do câmbio influencia a política monetária tanto pela pressão inflacionária que pode gerar, quanto pelo seu papel na atração ou fuga de capitais internacionais, afetando o equilíbrio macroeconômico do país.
+
+## ^Principais Momentos de Alta e Baixa do Dólar^
+
+**2002 – Alta expressiva:** Durante as eleições presidenciais e diante de incertezas políticas, o dólar ultrapassou R\$ 4,00, impulsionado por fuga de capitais e instabilidade nos mercados.
+
+**2008 – Crise financeira global:** Com a crise dos mercados financeiros nos Estados Unidos, o dólar teve uma valorização súbita frente ao real, chegando perto de R\$ 2,50 no fim do ano, devido à aversão ao risco nos mercados emergentes.
+
+**2011 – Valorização do real:** O dólar caiu para níveis em torno de R\$ 1,55, reflexo do forte ingresso de capital estrangeiro no Brasil e do crescimento econômico impulsionado por commodities.
+
+**2015 – Recessão e instabilidade política:** O Brasil enfrentava crise econômica e instabilidade política, o que levou o dólar a superar os R\$ 4,00 novamente.
+
+**2020 – Pandemia de COVID-19:** O dólar disparou com a incerteza global causada pela pandemia, atingindo níveis históricos superiores a R\$ 5,80, refletindo o aumento da percepção de risco e a saída de capital estrangeiro.
+
+**2022 em diante** – Volatilidade persistente: Apesar de certa recuperação econômica global, o dólar seguiu oscilando devido a fatores como política monetária dos EUA (aumento de juros pelo FED), inflação global e eleições presidenciais no Brasil.
+
+## A Importância da Taxa de Câmbio para o Brasil
+
+A taxa de câmbio exerce um papel estratégico na economia brasileira, funcionando como um dos principais canais de conexão entre o Brasil e o restante do mundo. Sendo um país com forte inserção no comércio internacional e que depende significativamente de insumos e bens importados, a variação do valor do dólar tem impacto direto e indireto sobre diversos setores da economia e sobre o cotidiano da população.
+
+### ^Indicador\ da\ Confiança\ Econômica:^
+
+A taxa de câmbio é frequentemente utilizada como um termômetro da confiança dos mercados na economia brasileira. Quando há estabilidade política, equilíbrio fiscal e perspectivas de crescimento, o real tende a se valorizar frente ao dólar. Em contrapartida, crises políticas, descontrole das contas públicas ou incertezas quanto à condução da política econômica geram desvalorização cambial, indicando menor confiança dos investidores.
+
+### ^Competitividade\ da\ Indústria\ e\ Balança\ Comercial:^
+
+A flutuação cambial também afeta diretamente a competitividade da indústria nacional. Um real desvalorizado torna os produtos brasileiros mais baratos no mercado internacional, favorecendo as exportações. Ao mesmo tempo, encarece os insumos importados utilizados em larga escala pela indústria brasileira, como peças, equipamentos e matérias-primas. Esse cenário exige planejamento cuidadoso por parte das empresas, especialmente nos setores mais integrados ao comércio exterior.
+
+Além disso, o câmbio influencia a balança comercial e a conta corrente do país. Quando o dólar está alto, há tendência de aumento das exportações e redução das importações, contribuindo para o equilíbrio das transações externas. Por outro lado, um real excessivamente valorizado pode prejudicar as exportações e aumentar o déficit externo.
+
+### ^Atração\ de\ Investimentos\ Estrangeiros:^
+
+O comportamento do câmbio é determinante para o fluxo de capitais internacionais. Um dólar valorizado pode atrair investimento estrangeiro direto, ao tornar ativos brasileiros mais baratos em termos de moeda estrangeira. Entretanto, a volatilidade cambial pode afastar investidores financeiros, que buscam ambientes com menor risco. Dessa forma, a estabilidade do câmbio é fundamental para a atratividade do país como destino de investimentos de longo prazo.
+
+### ^Efeitos\ Sobre\ a\ Dívida\ Pública\ e\ as\ Contas\ Governamentais:^
+
+Parte da dívida pública brasileira é atrelada à variação do dólar. Quando o câmbio se eleva, aumenta também o valor da dívida em reais, pressionando o orçamento público. Esse efeito pode comprometer a sustentabilidade fiscal e limitar a capacidade do Estado de realizar investimentos. Além disso, a arrecadação de tributos sobre operações de comércio exterior também é sensível ao câmbio, o que influencia o resultado das contas públicas.
+
+### ^Impactos\ no\ Custo\ de\ Vida\ e\ no\ Orçamento\ Familiar:^
+
+A valorização do dólar tem reflexos imediatos no custo de vida da população brasileira. Produtos importados, combustíveis, medicamentos e até alimentos — cujos preços são influenciados por insumos vindos do exterior — tornam-se mais caros, pressionando a inflação. Famílias de baixa renda são especialmente afetadas, pois possuem menor capacidade de absorver aumentos nos preços.
+
+### ^Planejamento\ Econômico\ e\ Estratégico:^
+
+Por fim, a taxa de câmbio é uma variável essencial para o planejamento econômico de empresas, governos e famílias. Empresas que exportam ou importam precisam projetar a trajetória do câmbio para definir preços, contratos e margens de lucro. O governo considera o câmbio em suas projeções fiscais, inflacionárias e de crescimento. Para as famílias, o câmbio influencia decisões de viagens internacionais, compras de produtos importados e investimentos. Portanto, sua flutuação exige constante monitoramento e capacidade de adaptação.
+
+## Conclusão
+
+A análise da flutuação da taxa de câmbio do dólar americano frente ao real revela a profundidade e a complexidade das relações econômicas que envolvem essa variável. Longe de ser apenas um indicador financeiro, a taxa de câmbio desempenha papel estratégico na economia brasileira, afetando desde a inflação e o comércio exterior até os investimentos, as contas públicas e o custo de vida da população.
+
+Ao longo das últimas décadas, os principais movimentos do dólar refletiram tanto choques externos — como crises financeiras globais e a pandemia de COVID-19 — quanto fatores internos, como instabilidade política, crises fiscais e decisões de política monetária. Esses momentos destacam como o câmbio é sensível à percepção de risco, ao fluxo de capitais e às condições macroeconômicas, sendo um dos principais canais de transmissão de choques para a economia doméstica.
+
+Compreender o comportamento cambial e suas implicações é essencial não apenas para formuladores de políticas públicas, mas também para empresários, investidores e cidadãos. A estabilidade e previsibilidade do câmbio contribuem para um ambiente econômico mais seguro, permitindo melhores decisões de planejamento, produção e consumo. Portanto, o acompanhamento histórico e analítico da taxa de câmbio é uma ferramenta valiosa para entender o presente, antecipar riscos e desenhar estratégias mais eficazes para o futuro da economia brasileira.
+
+## Fonte dos Dados
+
+BANCO CENTRAL DO BRASIL. Série temporal da taxa de câmbio livre – dólar americano (venda). Disponível em: <https://www.bcb.gov.br>. Acesso em: 13 maio 2025. Dados obtidos via pacote GetBCBData, função gbcbd_get_series() no software R.
+
+BRASIL. Banco Central do Brasil. *Relatório de Inflação – diversos anos*. Brasília: BCB, disponível em: https://www.bcb.gov.br/publicacoes/ri. Acesso em: 13 maio 2025.
+
+IBGE – Instituto Brasileiro de Geografia e Estatística. *Sistema Nacional de Índices de Preços ao Consumidor – IPCA*. Disponível em: https://www.ibge.gov.br/estatisticas/economicas/precos-e-custos/9256-indice-nacional-de-precos-ao-consumidor-amplo.html. Acesso em: 13 maio 2025.
+
+ORGANIZAÇÃO PARA COOPERAÇÃO E DESENVOLVIMENTO ECONÔMICO – OCDE. Indicadores econômicos e análises. Disponível em: https://data.oecd.org. Acesso em: 30 maio 2025.
